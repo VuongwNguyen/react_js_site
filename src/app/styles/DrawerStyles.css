@@ -1,0 +1,62 @@
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  /* Set chiều cao của container bằng 100% chiều cao màn hình */
+}
+
+.sidebar {
+  background-color: #e1e1e1;
+  color: #fff;
+  width: 250px;
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border-end-end-radius: 35px;
+  border-start-end-radius: 35px;
+}
+
+.sidebarClose {
+  display: none;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar ul div:hover {
+  background-color: #ace0ae !important;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  /* Cho phép nội dung cuộn khi vượt quá kích thước của khu vực content */
+}
+.header {
+  display: 'flex';
+  justify-content: 'space-between';
+  padding: 10;
+  color: 'black';
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
+}
