@@ -8,7 +8,6 @@ export const AppProvider = (props) => {
     const [account, setAccount] = useState(null);
     
     
-    console.log('account>>>>>>>', account);
     return (
         <AppContext.Provider value={{
             account, setAccount,

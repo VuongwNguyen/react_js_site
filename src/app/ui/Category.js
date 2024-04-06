@@ -13,21 +13,23 @@ function Category(props) {
     const [ParentId, setParentId] = useState(null);
     const [description, setDescription] = useState('');
 
+    console.log(categories);
+
     function handleClosePopup() {
         setshowEditPopup(false);
         setshowAddPopup(false);
         setshowDeletePopup(false);
+        setParentId(null);
+        setNameCategory('');
+        setDescription('');
     }
-
     function handleShowEditPopup(category) {
         setshowEditPopup(true);
         setCategory(category);
         setNameCategory(category.name);
         setParentId(category.parent_id?._id);
         setDescription(category.description);
-
     }
-
     function handleShowDeletePopup(category) {
         setshowDeletePopup(true);
         setCategory(category);
@@ -51,9 +53,6 @@ function Category(props) {
                     }
                     return item;
                 });
-                console.log('====================================');
-                console.log(newCategory);
-                console.log('====================================');
                 alert('Edit category successfully');
                 setCategories(newCategory);
                 setshowEditPopup(false);
@@ -131,18 +130,27 @@ function Category(props) {
         };
         fetchData();
     }, []);
-    //format date to hh:mm:ss-dd/mm/yyyy
+    //format date to hh:mm:ss-Monday,dd/mm/yyyy
     const formatDate = useCallback((date) => {
-        const d = new Date(date);
-        const day = d.getDate();
-        const month = d.getMonth() + 1;
-        const year = d.getFullYear();
-        const hour = d.getHours();
-        const minute = d.getMinutes();
-        const second = d.getSeconds();
-        return `${hour}:${minute}:${second}-${day}/${month}/${year}`;
+        const options = {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+        };
+        return new Date(date).toLocaleDateString('vi', options);
     }, []);
 
+    function checkCategoryParent(category_id, parent_id) {
+        console.log(parent_id, category_id);
+        if (category_id === parent_id) {
+            return true;
+        }
+        return false;
+    }
 
     return (
         <div>
@@ -159,7 +167,7 @@ function Category(props) {
                             <select value={ParentId} onChange={(e) => setParentId(e.target.value)}>
                                 <option value="0">Parent Id</option>
                                 {categoryNoneParent.map((category) => (
-                                    <option key={category._id} value={category._id}>{category.name}</option>
+                                    <option value={category._id}>{category.name}</option>
                                 ))}
                             </select>
                             <textarea
@@ -183,9 +191,9 @@ function Category(props) {
                                 value={NameCategory}
                                 onChange={(e) => setNameCategory(e.target.value)} />
                             <select value={ParentId} onChange={(e) => setParentId(e.target.value)}>
-                                <option value="0">Parent Id</option>
+                                <option defaultValue={() => checkCategoryParent(category._id, ParentId)}>{ }</option>
                                 {categoryNoneParent.map((category) => (
-                                    <option key={category._id} value={category._id}>{category.name}</option>
+                                    checkCategoryParent(category._id, ParentId) ? <option value={category._id} selected>{category.name}</option> : <option value={category._id}>{category.name}</option>
                                 ))}
                             </select>
                             <textarea
@@ -197,18 +205,18 @@ function Category(props) {
                     </div>
                 </div>)}
             {showDeletePopup && (
-                 <div className="popup">
-                 <div className="popup-content">
-                     <span className="close" onClick={handleClosePopup}>&times;</span>
-                     <h2>Delete Item</h2>
-                     <p>Are you sure you want to delete this item?</p>
-                     <div className='action'>
-                         <button className='bad-action' type="button" onClick={handleDeleteCategory}>Yes</button>
-                         <button className='good-action' type="button" onClick={handleClosePopup}>No</button>
-                     </div>
+                <div className="popup">
+                    <div className="popup-content">
+                        <span className="close" onClick={handleClosePopup}>&times;</span>
+                        <h2>Delete Item</h2>
+                        <p>Are you sure you want to delete this item?</p>
+                        <div className='action'>
+                            <button className='bad-action' type="button" onClick={handleDeleteCategory}>Yes</button>
+                            <button className='good-action' type="button" onClick={handleClosePopup}>No</button>
+                        </div>
 
-                 </div>
-             </div>)}
+                    </div>
+                </div>)}
             <div className="header">
                 <h1>Category</h1>
                 <button type='button'
@@ -235,7 +243,7 @@ function Category(props) {
                         <td>{formatDate(category.created_at)}</td>
                         <td>
                             <button type='button' onClick={() => handleShowEditPopup(category)} className='good-action'>Edit</button>
-                            <button type='button' onClick={()=>handleShowDeletePopup(category)} className='bad-action'>Delete</button>
+                            <button type='button' onClick={() => handleShowDeletePopup(category)} className='bad-action'>Delete</button>
                         </td>
                     </tr>)
                     )}

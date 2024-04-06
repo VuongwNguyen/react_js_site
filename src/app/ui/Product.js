@@ -15,6 +15,8 @@ function Product(props) {
     const [QuantityProduct, setQuantityProduct] = useState('');
     const [Categories, setCategories] = useState([]);
     const [categorySelected, setCategorySelected] = useState(null);
+
+    
     const handleEditProduct = (product) => {
         setshowEditPopup(true);
         setProduct(product);
@@ -62,7 +64,7 @@ function Product(props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await AxiosInstance().get('/category/getCategoryNoneParent');
+                const response = await AxiosInstance().get('/category/getAllCategory');
                 if (response.status === true) {
                     setCategories(response.categories);
                 }
@@ -81,18 +83,14 @@ function Product(props) {
                     name: NameProduct,
                     price: PriceProduct,
                     quantity: QuantityProduct,
+                    category_id: categorySelected,
                 },
             };
             const response = await AxiosInstance().post('/product/updateProduct', body);
             if (response.status === true) {
                 const newProducts = products.map((item) => {
                     if (item._id === product._id) {
-                        return {
-                            ...item,
-                            name: NameProduct,
-                            price: PriceProduct,
-                            quantity: QuantityProduct,
-                        };
+                        return response.product;
                     }
                     return item;
                 });
@@ -101,7 +99,6 @@ function Product(props) {
                 setNameProduct('');
                 setPriceProduct('');
                 setQuantityProduct('');
-                setCategorySelected(null);
                 alert('Update product successfully');
             }
         } catch (error) {
@@ -136,7 +133,6 @@ function Product(props) {
                     price: PriceProduct,
                     quantity: QuantityProduct,
                     category_id: categorySelected,
-
                 }
             };
             const response = await AxiosInstance().post('/product/createProduct', body);
@@ -197,7 +193,7 @@ function Product(props) {
                                 onChange={(e) => setQuantityProduct(e.target.value)}
                             />
                             <select value={categorySelected} onChange={(e) => setCategorySelected(e.target.value)}>
-                                <option value="0">Category</option>
+                                <option value={categorySelected?._id}>{categorySelected?.name}</option>
                                 {Categories.map((category) => (
                                     <option key={category._id} value={category._id}>{category.name}</option>
                                 ))}
@@ -230,10 +226,10 @@ function Product(props) {
                                 id="itemQuantity"
                                 onChange={(e) => setQuantityProduct(e.target.value)}
                             />
-                            <select value={setCategorySelected} onChange={(e) => setCategorySelected(e.target.value)}>
+                            <select value={categorySelected} onChange={(e) => setCategorySelected(e.target.value)}>
                                 <option value="0">Category</option>
                                 {Categories.map((category) => (
-                                    <option key={category._id} value={category._id}>{category.name}</option>
+                                    <option value={category._id}>{category.name}</option>
                                 ))}
                             </select>
                             <button type="button" onClick={handleAddProduct}>Save</button>
@@ -265,6 +261,7 @@ function Product(props) {
                     <tr>
                         <th>Index</th>
                         <th>Product Name</th>
+                        <th>Category</th>
                         <th>Product Price</th>
                         <th>Product Quantity</th>
                         <th>Created at</th>
@@ -276,6 +273,7 @@ function Product(props) {
                         <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{product.name}</td>
+                            <td>{product.category_id?.name}</td>
                             <td>{product.price} VNĐ</td>
                             <td>{product.quantity}</td>
                             <td>{formatDate(product.created_at)}</td>

@@ -6,7 +6,7 @@ import Category from './Category';
 import { HambergerMenu, Logout } from 'iconsax-react';
 import { AppContext } from '../../context/AppContext';
 const Drawer = () => {
-    const { account,setAccount } = useContext(AppContext);
+    const { account, setAccount } = useContext(AppContext);
     const [currentPage, setCurrentPage] = useState(1); // State để lưu trữ trang hiện tại
     const [toogle, setToogle] = useState(true);
 
@@ -18,7 +18,7 @@ const Drawer = () => {
         <div className="dashboard-container">
             <div className={toogle ? "sidebar" : "sidebarClose"}>
                 <div className='header'>
-                    <h2 className='title'>Hello, {account.username}</h2>
+                    <h2 className='title'>Hello, {account?.username}</h2>
                     <Logout variant='Outline' color='red' style={{ cursor: 'pointer' }} onClick={{}} />
                 </div>
 
@@ -51,7 +51,7 @@ const Drawer = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                     }}
-                    onClick={() =>{ setToogle(!toogle);setAccount(null)}}><HambergerMenu /></button>
+                    onClick={() => { setToogle(!toogle); setAccount(null) }}><HambergerMenu /></button>
             </div>
 
             <div className="content">
